@@ -1,5 +1,6 @@
 {
-  "name": "aws-iotsitewise-alpha",
+  "name": "@aws-cdk/aws-iotsitewise-alpha",
+  "description": "The CDK Construct Library for AWS::IoTSitewise.",
   "repository": {
     "type": "git",
     "url": "https://github.com/donatoaz/aws-iotsitewise-alpha.git"
@@ -17,6 +18,7 @@
     "package": "npx projen package",
     "package-all": "npx projen package-all",
     "package:js": "npx projen package:js",
+    "package:python": "npx projen package:python",
     "post-compile": "npx projen post-compile",
     "post-upgrade": "npx projen post-upgrade",
     "pre-compile": "npx projen pre-compile",
@@ -29,7 +31,7 @@
     "projen": "npx projen"
   },
   "author": {
-    "name": "donatoaz",
+    "name": "Donato Azevedo",
     "email": "donatoaz@amazon.com",
     "organization": false
   },
@@ -38,7 +40,7 @@
     "@types/node": "^14",
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
-    "aws-cdk-lib": "2.1.0",
+    "aws-cdk-lib": "2.45.0",
     "constructs": "10.0.5",
     "eslint": "^8",
     "eslint-import-resolver-node": "^0.3.6",
@@ -58,10 +60,11 @@
     "typescript": "^4.8.4"
   },
   "peerDependencies": {
-    "aws-cdk-lib": "^2.1.0",
+    "aws-cdk-lib": "^2.45.0",
     "constructs": "^10.0.5"
   },
   "keywords": [
+    "awscdk",
     "cdk"
   ],
   "main": "lib/index.js",
@@ -108,10 +111,15 @@
     }
   },
   "types": "lib/index.d.ts",
-  "stability": "stable",
+  "stability": "experimental",
   "jsii": {
     "outdir": "dist",
-    "targets": {},
+    "targets": {
+      "python": {
+        "distName": "aws-iotsitewise-alpha",
+        "module": "aws_iotsitewise_alpha"
+      }
+    },
     "tsc": {
       "outDir": "lib",
       "rootDir": "src"
