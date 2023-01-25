@@ -24,7 +24,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   docgen: true,
   eslint: true,
   // dependabot: true,
-  gitignore: ['.vscode'],
+  gitignore: ['.vscode', '_local_test/', 'cdk.json'],
   // deps: ['aws-cdk-lib'],
   devDeps: ['aws-cdk-lib'] /* Build dependencies for this module. */,
 });

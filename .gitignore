@@ -31,6 +31,8 @@ jspm_packages/
 .yarn-integrity
 .cache
 .vscode
+_local_test/
+cdk.json
 !/.projenrc.js
 /test-reports/
 junit.xml

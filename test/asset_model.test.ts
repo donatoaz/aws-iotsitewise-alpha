@@ -1,7 +1,7 @@
 import { App, Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
-import { AssetModel, DataType, Measure, Metric } from '../src/index';
+import { AssetModel, DataType, Measurement, Metric } from '../src/index';
 
 const app = new App();
 const stack = new Stack(app);
@@ -39,10 +39,11 @@ motor.addAttribute({
   dataType: DataType.INTEGER,
 });
 
-const temperature: Measure = {
+const temperature: Measurement = {
   name: 'Oil Temperature C',
   dataType: DataType.DOUBLE,
   unit: 'C',
+  logicalId: 'TemperatureId', // for testing only, when deployed, this is a result from resource creation
 };
 motor.addMeasurement(temperature);
 
@@ -59,47 +60,97 @@ motor.addMetric({
   ],
   tumblingWindow: {
     interval: '1h',
-    offset: '2h',
   },
-});
+} as Metric);
 
 motor.addTransform({
   name: 'Oil Temperature F',
   dataType: DataType.DOUBLE,
   unit: 'F',
   expression: '9/5 * oil_temp_c + 32',
-  variables: {
-    oil_temp_c: 'Oil Temperature C',
-  },
+  variables: [{ name: 'oil_temp_c', property: temperature }],
 });
 
-const weight: Measure = {
+const weight: Measurement = {
   name: 'Weight Kg',
   dataType: DataType.DOUBLE,
   unit: 'Kg',
 };
+const weight1 = { logicalId: 'Weight1', ...weight };
+const weight2 = { logicalId: 'Weight2', ...weight };
 
-loadCell1.addMeasurement(weight);
-loadCell2.addMeasurement(weight);
+loadCell1.addMeasurement(weight1);
+loadCell2.addMeasurement(weight2);
+
+const avgWeight1 = {
+  name: 'Avg Weight',
+  dataType: DataType.DOUBLE,
+  expression: 'avg(weight)',
+  unit: 'Kg',
+  logicalId: 'AvgWeight1',
+  variables: [
+    {
+      name: 'weight',
+      property: weight1,
+    },
+  ],
+  tumblingWindow: {
+    interval: '1h',
+  },
+};
+
+const avgWeight2 = {
+  name: 'Avg Weight',
+  dataType: DataType.DOUBLE,
+  expression: 'avg(weight)',
+  unit: 'Kg',
+  logicalId: 'AvgWeight2',
+  variables: [
+    {
+      name: 'weight',
+      property: weight2,
+    },
+  ],
+  tumblingWindow: {
+    interval: '1h',
+  },
+};
+
+loadCell1.addMetric(avgWeight1);
+loadCell2.addMetric(avgWeight2);
 
 // Testing hierarchies
-conveyor.addChildren(motor, loadCell1, loadCell2);
+conveyor.addChild({
+  name: 'Motor',
+  childAssetModelId: motor.assetModelId,
+});
+
+conveyor.addChild({
+  name: 'LoadCell1',
+  childAssetModelId: loadCell1.assetModelId,
+});
+
+conveyor.addChild({
+  name: 'LoadCell2',
+  childAssetModelId: loadCell2.assetModelId,
+});
 
 conveyor.addMetric({
   name: 'Full Weight Kg',
   dataType: DataType.DOUBLE,
   expression: 'sum(load_1, load_2)',
   unit: 'Kg',
+  logicalId: 'FullWeightId',
   variables: [
     {
       name: 'load_1',
-      property: weight,
-      model: loadCell1,
+      property: avgWeight1,
+      hierachy: conveyor.child('LoadCell1'),
     },
     {
       name: 'load_2',
-      property: weight,
-      model: loadCell2,
+      property: avgWeight2,
+      hierachy: conveyor.child('LoadCell2'),
     },
   ],
   tumblingWindow: {
@@ -111,7 +162,6 @@ const template = Template.fromStack(stack);
 
 describe('AWS::IoTSiteWise AssetModel Contruct', () => {
   it('synthesizes a template that has 4 AWS::IoTSiteWise::AssetModel resources', () => {
-    // template.hasResource('AWS::IoTSiteWise::AssetModel', {});
     template.resourceCountIs('AWS::IoTSiteWise::AssetModel', 4);
   });
 
@@ -135,7 +185,7 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
         {
           Name: 'Full Weight Kg',
           DataType: 'DOUBLE',
-          LogicalId: 'ConveyorFullWeightKg',
+          LogicalId: 'FullWeightId',
           Unit: 'Kg',
           Type: {
             TypeName: 'Metric',
@@ -145,15 +195,15 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
                 {
                   Name: 'load_1',
                   Value: {
-                    PropertyLogicalId: 'Weight Kg',
-                    HierarchyLogicalId: 'loadCell11E15C242',
+                    PropertyLogicalId: 'AvgWeight1',
+                    HierarchyLogicalId: 'LoadCell1',
                   },
                 },
                 {
                   Name: 'load_2',
                   Value: {
-                    PropertyLogicalId: 'Weight Kg',
-                    HierarchyLogicalId: 'loadCell2EB275B40',
+                    PropertyLogicalId: 'AvgWeight2',
+                    HierarchyLogicalId: 'LoadCell2',
                   },
                 },
               ],
@@ -168,26 +218,31 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
       ],
       AssetModelHierarchies: [
         {
-          ChildAssetModelId: 'Motor171E74FE',
-          LogicalId: 'ConveyorMotor',
-          Name: 'DC Motor',
+          ChildAssetModelId: {
+            'Fn::GetAtt': ['Motor171E74FE', 'AssetModelId'],
+          },
+          LogicalId: 'Motor',
+          Name: 'Motor',
         },
         {
-          ChildAssetModelId: 'loadCell11E15C242',
-          LogicalId: 'ConveyorloadCell1',
-          Name: 'Load Cell #1',
+          ChildAssetModelId: {
+            'Fn::GetAtt': ['loadCell11E15C242', 'AssetModelId'],
+          },
+          LogicalId: 'LoadCell1',
+          Name: 'LoadCell1',
         },
         {
-          ChildAssetModelId: 'loadCell2EB275B40',
-          LogicalId: 'ConveyorloadCell2',
-          Name: 'Load Cell #2',
+          ChildAssetModelId: {
+            'Fn::GetAtt': ['loadCell2EB275B40', 'AssetModelId'],
+          },
+          LogicalId: 'LoadCell2',
+          Name: 'LoadCell2',
         },
       ],
     });
   });
 
   it('contains the model for the motor', () => {
-    console.log(template.toJSON());
     template.hasResourceProperties('AWS::IoTSiteWise::AssetModel', {
       AssetModelName: 'DC Motor',
       AssetModelDescription: 'Conveyor Belt Motor',
@@ -207,10 +262,10 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
         {
           Name: 'Oil Temperature C',
           DataType: 'DOUBLE',
-          LogicalId: 'MotorOilTemperatureC',
+          LogicalId: 'TemperatureId',
           Unit: 'C',
           Type: {
-            TypeName: 'Measure',
+            TypeName: 'Measurement',
           },
         },
         {
@@ -225,14 +280,13 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
                 {
                   Name: 'oil_temp_c',
                   Value: {
-                    PropertyLogicalId: 'Oil Temperature C',
+                    PropertyLogicalId: 'TemperatureId',
                   },
                 },
               ],
               Window: {
                 Tumbling: {
                   Interval: '1h',
-                  Offset: '2h',
                 },
               },
             },
@@ -251,7 +305,7 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
                 {
                   Name: 'oil_temp_c',
                   Value: {
-                    PropertyLogicalId: 'Oil Temperature C',
+                    PropertyLogicalId: 'TemperatureId',
                   },
                 },
               ],
@@ -263,20 +317,45 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
     });
   });
 
-  it('contains models for the load cells', () => {
+  it.each([[1], [2]])('contains model for the load cell %s', (id) => {
     template.hasResourceProperties('AWS::IoTSiteWise::AssetModel', {
-      AssetModelName: 'Load Cell #1',
+      AssetModelName: `Load Cell #${id}`,
       AssetModelDescription: 'Indicates load in linear section of conveyor',
       AssetModelHierarchies: [],
       AssetModelProperties: [
         {
           DataType: 'DOUBLE',
-          LogicalId: 'loadCell1WeightKg',
+          LogicalId: `Weight${id}`,
           Name: 'Weight Kg',
           Unit: 'Kg',
           Type: {
-            TypeName: 'Measure',
+            TypeName: 'Measurement',
           },
+        },
+        {
+          Name: 'Avg Weight',
+          DataType: 'DOUBLE',
+          LogicalId: `AvgWeight${id}`,
+          Type: {
+            TypeName: 'Metric',
+            Metric: {
+              Expression: 'avg(weight)',
+              Variables: [
+                {
+                  Name: 'weight',
+                  Value: {
+                    PropertyLogicalId: `Weight${id}`,
+                  },
+                },
+              ],
+              Window: {
+                Tumbling: {
+                  Interval: '1h',
+                },
+              },
+            },
+          },
+          Unit: 'Kg',
         },
       ],
     });

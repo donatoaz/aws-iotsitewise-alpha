@@ -23,7 +23,7 @@ export interface Property {
    *
    * @internal
    */
-  _type?: 'Attribute' | 'Metric' | 'Transform' | 'Measure';
+  _type?: 'Attribute' | 'Metric' | 'Transform' | 'Measurement';
 
   /**
    * The data type of the asset model property.
@@ -62,10 +62,15 @@ export interface Property {
   readonly unit?: string;
 }
 
-interface Variable {
+export interface Variable {
+  readonly name: string;
+  readonly property: Property;
+  readonly hierachy?: Hierarchy;
+}
+
+export interface Hierarchy {
   name: string;
-  property: Property;
-  model?: AssetModel;
+  childAssetModelId: string;
 }
 
 export interface Attribute extends Property {
@@ -74,13 +79,13 @@ export interface Attribute extends Property {
 
 export interface Transform extends Property {
   readonly expression: string;
-  readonly variables: Record<string, string>;
+  readonly variables: Variable[];
 }
 
 export interface TumblingWindow {
   readonly interval: string;
   readonly offset?: string;
-};
+}
 
 export interface Metric extends Property {
   /**
@@ -105,7 +110,7 @@ export interface Metric extends Property {
   readonly variables: Variable[];
 }
 
-export interface Measure extends Property {}
+export interface Measurement extends Property {}
 
 export interface AssetModelProps {
   /**
@@ -124,8 +129,8 @@ export class AssetModel extends Construct {
   public readonly model: CfnAssetModel;
   public readonly id: string;
 
-  private readonly properties: (Attribute | Measure | Transform | Metric)[];
-  private readonly children: AssetModel[];
+  private readonly properties: (Attribute | Measurement | Transform | Metric)[];
+  private readonly children: Hierarchy[];
 
   constructor(scope: Construct, id: string, props: AssetModelProps) {
     super(scope, id);
@@ -152,19 +157,31 @@ export class AssetModel extends Construct {
     return this.model.logicalId;
   }
 
+  get assetModelId() {
+    return this.model.getAtt('AssetModelId').toString();
+  }
+
+  child(name: string) {
+    return this.children.find((c) => c.name === name);
+  }
+
   /**
    * Convenience method to add a child Asset Model to this model's hierarchy
    *
    * @param {AssetModel} child
    * @returns {AssetModel} instance of {AssetModel}
    */
-  addChild(child: AssetModel): AssetModel {
+  addChild(child: Hierarchy): AssetModel {
+    if (!child.name.match(/[^\u0000-\u001F\u007F]+/)) {
+      throw new Error(`Invalid name: ${child.name}`);
+    }
+
     this.children.push(child);
 
     return this;
   }
 
-  addChildren(...children: AssetModel[]) {
+  addChildren(...children: Hierarchy[]) {
     for (const c of children) {
       this.children.push(c);
     }
@@ -272,17 +289,17 @@ export class AssetModel extends Construct {
     return this;
   }
 
-  addMeasurement(measurement: Measure): AssetModel {
-    this.properties.push({ _type: 'Measure', ...measurement });
+  addMeasurement(measurement: Measurement): AssetModel {
+    this.properties.push({ _type: 'Measurement', ...measurement });
     return this;
   }
 
   private renderAssetModelHierarchies(): CfnAssetModel.AssetModelHierarchyProperty[] {
     const children = this.children.map(
-      (c: AssetModel): CfnAssetModel.AssetModelHierarchyProperty => ({
-        name: c.model.assetModelName,
-        childAssetModelId: c.model.logicalId,
-        logicalId: this.id + c.id,
+      (child: Hierarchy): CfnAssetModel.AssetModelHierarchyProperty => ({
+        childAssetModelId: child.childAssetModelId,
+        name: child.name,
+        logicalId: child.name,
       }),
     );
 
@@ -310,16 +327,16 @@ export class AssetModel extends Construct {
       });
 
     const measures = this.properties
-      .filter(({ _type }) => _type === 'Measure')
+      .filter(({ _type }) => _type === 'Measurement')
       .map(
-        (m: Measure): CfnAssetModel.AssetModelPropertyProperty => ({
+        (m: Measurement): CfnAssetModel.AssetModelPropertyProperty => ({
           name: m.name,
           dataType: m.dataType,
           dataTypeSpec: m.dataTypeSpec,
           logicalId: m.logicalId || this.id + m.name.replace(/[^\w]/g, ''),
           unit: m.unit,
           type: {
-            typeName: 'Measure',
+            typeName: 'Measurement',
           },
         }),
       );
@@ -334,8 +351,8 @@ export class AssetModel extends Construct {
           variables: m.variables.map((v) => ({
             name: v.name,
             value: {
-              propertyLogicalId: v.property.name,
-              hierarchyLogicalId: v.model?.logicalId,
+              propertyLogicalId: v.property.logicalId!,
+              hierarchyLogicalId: v.hierachy?.name,
             },
           })),
           window: {
@@ -368,10 +385,11 @@ export class AssetModel extends Construct {
           typeName: 'Transform',
           transform: {
             expression: t.expression,
-            variables: Object.entries(t.variables).map(([k, v]) => ({
-              name: k,
+            variables: t.variables.map((v) => ({
+              name: v.name,
               value: {
-                propertyLogicalId: v,
+                propertyLogicalId: v.property.logicalId!,
+                hierarchyLogicalId: v.hierachy?.name,
               },
             })),
           },
