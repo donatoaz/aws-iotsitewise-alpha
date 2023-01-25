@@ -62,6 +62,12 @@ export interface Property {
   readonly unit?: string;
 }
 
+interface Variable {
+  name: string;
+  property: Property;
+  model?: AssetModel;
+}
+
 export interface Attribute extends Property {
   readonly defaultValue?: string;
 }
@@ -96,7 +102,7 @@ export interface Metric extends Property {
    * A mapping between the name used in the expression to the name of the
    * referenced value. See addMetric for an example
    */
-  readonly variables: Record<string, string>;
+  readonly variables: Variable[];
 }
 
 export interface Measure extends Property {}
@@ -116,9 +122,10 @@ export interface AssetModelProps {
 
 export class AssetModel extends Construct {
   public readonly model: CfnAssetModel;
+  public readonly id: string;
 
-  private id: string;
-  private properties: (Attribute | Measure | Transform | Metric)[];
+  private readonly properties: (Attribute | Measure | Transform | Metric)[];
+  private readonly children: AssetModel[];
 
   constructor(scope: Construct, id: string, props: AssetModelProps) {
     super(scope, id);
@@ -127,6 +134,7 @@ export class AssetModel extends Construct {
 
     this.id = id;
     this.properties = [];
+    this.children = [];
 
     this.model = new CfnAssetModel(this, 'Resource', {
       assetModelName: name,
@@ -134,13 +142,38 @@ export class AssetModel extends Construct {
       assetModelProperties: Lazy.any({
         produce: () => this.renderAssetModelProperties(),
       }),
+      assetModelHierarchies: Lazy.any({
+        produce: () => this.renderAssetModelHierarchies(),
+      }),
     } as CfnAssetModelProps);
+  }
+
+  get logicalId() {
+    return this.model.logicalId;
+  }
+
+  /**
+   * Convenience method to add a child Asset Model to this model's hierarchy
+   *
+   * @param {AssetModel} child
+   * @returns {AssetModel} instance of {AssetModel}
+   */
+  addChild(child: AssetModel): AssetModel {
+    this.children.push(child);
+
+    return this;
+  }
+
+  addChildren(...children: AssetModel[]) {
+    for (const c of children) {
+      this.children.push(c);
+    }
   }
 
   /**
    * addAttribute
    *
-   * Convinience method to add a Property with typeName 'Attribute'.
+   * Convenience method to add a Property with typeName 'Attribute'.
    *
    * Asset attributes represent information that is generally static, such as
    * device manufacturer or geographiclocation. Each asset that you create from
@@ -244,6 +277,18 @@ export class AssetModel extends Construct {
     return this;
   }
 
+  private renderAssetModelHierarchies(): CfnAssetModel.AssetModelHierarchyProperty[] {
+    const children = this.children.map(
+      (c: AssetModel): CfnAssetModel.AssetModelHierarchyProperty => ({
+        name: c.model.assetModelName,
+        childAssetModelId: c.model.logicalId,
+        logicalId: this.id + c.id,
+      }),
+    );
+
+    return children;
+  }
+
   private renderAssetModelProperties(): CfnAssetModel.AssetModelPropertyProperty[] {
     const attributes = this.properties
       .filter(({ _type }) => _type === 'Attribute')
@@ -286,10 +331,11 @@ export class AssetModel extends Construct {
         typeName: 'Metric',
         metric: {
           expression: m.expression,
-          variables: Object.entries(m.variables).map(([k, v]) => ({
-            name: k,
+          variables: m.variables.map((v) => ({
+            name: v.name,
             value: {
-              propertyLogicalId: v,
+              propertyLogicalId: v.property.name,
+              hierarchyLogicalId: v.model?.logicalId,
             },
           })),
           window: {

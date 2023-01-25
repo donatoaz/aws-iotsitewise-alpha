@@ -44,6 +44,8 @@ new AssetModel(scope: Construct, id: string, props: AssetModelProps)
 | --- | --- |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.toString">toString</a></code> | Returns a string representation of this construct. |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.addAttribute">addAttribute</a></code> | addAttribute. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.addChild">addChild</a></code> | Convenience method to add a child Asset Model to this model's hierarchy. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.addChildren">addChildren</a></code> | *No description.* |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.addMeasurement">addMeasurement</a></code> | *No description.* |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.addMetric">addMetric</a></code> | addMetric. |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.addTransform">addTransform</a></code> | addTransform. |
@@ -66,7 +68,7 @@ public addAttribute(attr: Attribute): AssetModel
 
 addAttribute.
 
-Convinience method to add a Property with typeName 'Attribute'.
+Convenience method to add a Property with typeName 'Attribute'.
 
 Asset attributes represent information that is generally static, such as
 device manufacturer or geographiclocation. Each asset that you create from
@@ -87,6 +89,32 @@ motor.addAttribute({
 ###### `attr`<sup>Required</sup> <a name="attr" id="@aws-cdk/aws-iotsitewise-alpha.AssetModel.addAttribute.parameter.attr"></a>
 
 - *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute">Attribute</a>
+
+---
+
+##### `addChild` <a name="addChild" id="@aws-cdk/aws-iotsitewise-alpha.AssetModel.addChild"></a>
+
+```typescript
+public addChild(child: AssetModel): AssetModel
+```
+
+Convenience method to add a child Asset Model to this model's hierarchy.
+
+###### `child`<sup>Required</sup> <a name="child" id="@aws-cdk/aws-iotsitewise-alpha.AssetModel.addChild.parameter.child"></a>
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel">AssetModel</a>
+
+---
+
+##### `addChildren` <a name="addChildren" id="@aws-cdk/aws-iotsitewise-alpha.AssetModel.addChildren"></a>
+
+```typescript
+public addChildren(children: AssetModel): void
+```
+
+###### `children`<sup>Required</sup> <a name="children" id="@aws-cdk/aws-iotsitewise-alpha.AssetModel.addChildren.parameter.children"></a>
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel">AssetModel</a>
 
 ---
 
