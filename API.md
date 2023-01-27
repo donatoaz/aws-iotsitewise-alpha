@@ -49,6 +49,7 @@ new AssetModel(scope: Construct, id: string, props: AssetModelProps)
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.addMeasurement">addMeasurement</a></code> | *No description.* |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.addMetric">addMetric</a></code> | addMetric. |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.addTransform">addTransform</a></code> | addTransform. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.findChild">findChild</a></code> | *No description.* |
 
 ---
 
@@ -147,6 +148,7 @@ temperature from a temperature data stream.
 
 Example:
 
+```javascript
 let motor: AssetModel;
 motor.addMetric({
    name: 'Max Temperature C',
@@ -160,6 +162,7 @@ motor.addMetric({
      tumbling: { interval: '1h' }
    }
 })
+```
 
 > [https://docs.aws.amazon.com/iot-sitewise/latest/userguide/metrics.html](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/metrics.html)
 
@@ -209,6 +212,18 @@ Example:
 
 ---
 
+##### `findChild` <a name="findChild" id="@aws-cdk/aws-iotsitewise-alpha.AssetModel.findChild"></a>
+
+```typescript
+public findChild(child: AssetModel): Hierarchy
+```
+
+###### `child`<sup>Required</sup> <a name="child" id="@aws-cdk/aws-iotsitewise-alpha.AssetModel.findChild.parameter.child"></a>
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel">AssetModel</a>
+
+---
+
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
 | **Name** | **Description** |
@@ -240,9 +255,11 @@ Any object.
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.property.assetModelId">assetModelId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.property.id">id</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.property.logicalId">logicalId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.property.model">model</a></code> | <code>aws-cdk-lib.aws_iotsitewise.CfnAssetModel</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel.property.name">name</a></code> | <code>string</code> | *No description.* |
 
 ---
 
@@ -255,6 +272,16 @@ public readonly node: Node;
 - *Type:* constructs.Node
 
 The tree node.
+
+---
+
+##### `assetModelId`<sup>Required</sup> <a name="assetModelId" id="@aws-cdk/aws-iotsitewise-alpha.AssetModel.property.assetModelId"></a>
+
+```typescript
+public readonly assetModelId: string;
+```
+
+- *Type:* string
 
 ---
 
@@ -285,6 +312,16 @@ public readonly model: CfnAssetModel;
 ```
 
 - *Type:* aws-cdk-lib.aws_iotsitewise.CfnAssetModel
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.AssetModel.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
 
 ---
 
@@ -336,30 +373,30 @@ A description for the asset model.
 
 ---
 
-### Attribute <a name="Attribute" id="@aws-cdk/aws-iotsitewise-alpha.Attribute"></a>
+### AttributeProps <a name="AttributeProps" id="@aws-cdk/aws-iotsitewise-alpha.AttributeProps"></a>
 
-#### Initializer <a name="Initializer" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.Initializer"></a>
+#### Initializer <a name="Initializer" id="@aws-cdk/aws-iotsitewise-alpha.AttributeProps.Initializer"></a>
 
 ```typescript
-import { Attribute } from '@aws-cdk/aws-iotsitewise-alpha'
+import { AttributeProps } from '@aws-cdk/aws-iotsitewise-alpha'
 
-const attribute: Attribute = { ... }
+const attributeProps: AttributeProps = { ... }
 ```
 
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | The data type of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.name">name</a></code> | <code>string</code> | The name of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | The data type of the structure for this property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.logicalId">logicalId</a></code> | <code>string</code> | The LogicalID of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.unit">unit</a></code> | <code>string</code> | The unit of the asset model property, such as Newtons or RPM. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.defaultValue">defaultValue</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | The data type of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.name">name</a></code> | <code>string</code> | The name of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | The data type of the structure for this property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.logicalId">logicalId</a></code> | <code>string</code> | The LogicalID of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.unit">unit</a></code> | <code>string</code> | The unit of the asset model property, such as Newtons or RPM. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.defaultValue">defaultValue</a></code> | <code>string</code> | *No description.* |
 
 ---
 
-##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.dataType"></a>
+##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.dataType"></a>
 
 ```typescript
 public readonly dataType: DataType;
@@ -373,7 +410,7 @@ The value can be STRING, INTEGER, DOUBLE, BOOLEAN, or STRUCT.
 
 ---
 
-##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.name"></a>
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.name"></a>
 
 ```typescript
 public readonly name: string;
@@ -387,7 +424,7 @@ The maximum length is 256 characters with the pattern [^\u0000-\u001F\u007F]+.
 
 ---
 
-##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.dataTypeSpec"></a>
+##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.dataTypeSpec"></a>
 
 ```typescript
 public readonly dataTypeSpec: string;
@@ -401,7 +438,7 @@ This parameter exists on properties that have the STRUCT data type.
 
 ---
 
-##### `logicalId`<sup>Optional</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.logicalId"></a>
+##### `logicalId`<sup>Optional</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.logicalId"></a>
 
 ```typescript
 public readonly logicalId: string;
@@ -416,7 +453,7 @@ The maximum length is 256 characters, with the pattern [^\\u0000-\\u001F\\u007F]
 
 ---
 
-##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.unit"></a>
+##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.unit"></a>
 
 ```typescript
 public readonly unit: string;
@@ -428,7 +465,7 @@ The unit of the asset model property, such as Newtons or RPM.
 
 ---
 
-##### `defaultValue`<sup>Optional</sup> <a name="defaultValue" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.defaultValue"></a>
+##### `defaultValue`<sup>Optional</sup> <a name="defaultValue" id="@aws-cdk/aws-iotsitewise-alpha.AttributeProps.property.defaultValue"></a>
 
 ```typescript
 public readonly defaultValue: string;
@@ -438,29 +475,71 @@ public readonly defaultValue: string;
 
 ---
 
-### Measurement <a name="Measurement" id="@aws-cdk/aws-iotsitewise-alpha.Measurement"></a>
+### Hierarchy <a name="Hierarchy" id="@aws-cdk/aws-iotsitewise-alpha.Hierarchy"></a>
 
-#### Initializer <a name="Initializer" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.Initializer"></a>
+#### Initializer <a name="Initializer" id="@aws-cdk/aws-iotsitewise-alpha.Hierarchy.Initializer"></a>
 
 ```typescript
-import { Measurement } from '@aws-cdk/aws-iotsitewise-alpha'
+import { Hierarchy } from '@aws-cdk/aws-iotsitewise-alpha'
 
-const measurement: Measurement = { ... }
+const hierarchy: Hierarchy = { ... }
 ```
 
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | The data type of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.name">name</a></code> | <code>string</code> | The name of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | The data type of the structure for this property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.logicalId">logicalId</a></code> | <code>string</code> | The LogicalID of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.unit">unit</a></code> | <code>string</code> | The unit of the asset model property, such as Newtons or RPM. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Hierarchy.property.childAssetModelId">childAssetModelId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Hierarchy.property.name">name</a></code> | <code>string</code> | *No description.* |
 
 ---
 
-##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.dataType"></a>
+##### `childAssetModelId`<sup>Required</sup> <a name="childAssetModelId" id="@aws-cdk/aws-iotsitewise-alpha.Hierarchy.property.childAssetModelId"></a>
+
+```typescript
+public readonly childAssetModelId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Hierarchy.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+---
+
+### MetricProps <a name="MetricProps" id="@aws-cdk/aws-iotsitewise-alpha.MetricProps"></a>
+
+#### Initializer <a name="Initializer" id="@aws-cdk/aws-iotsitewise-alpha.MetricProps.Initializer"></a>
+
+```typescript
+import { MetricProps } from '@aws-cdk/aws-iotsitewise-alpha'
+
+const metricProps: MetricProps = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | The data type of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.name">name</a></code> | <code>string</code> | The name of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | The data type of the structure for this property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.logicalId">logicalId</a></code> | <code>string</code> | The LogicalID of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.unit">unit</a></code> | <code>string</code> | The unit of the asset model property, such as Newtons or RPM. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.expression">expression</a></code> | <code>string</code> | The mathematical expression that defines the metric aggregation function. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.tumblingWindow">tumblingWindow</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TumblingWindow">TumblingWindow</a></code> | Contains a time interval window used for data aggregate computations (for example, average, sum, count, and so on). |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.variables">variables</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Variable">Variable</a>[]</code> | A mapping between the name used in the expression to the name of the referenced value. |
+
+---
+
+##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.dataType"></a>
 
 ```typescript
 public readonly dataType: DataType;
@@ -474,7 +553,7 @@ The value can be STRING, INTEGER, DOUBLE, BOOLEAN, or STRUCT.
 
 ---
 
-##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.name"></a>
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.name"></a>
 
 ```typescript
 public readonly name: string;
@@ -488,7 +567,7 @@ The maximum length is 256 characters with the pattern [^\u0000-\u001F\u007F]+.
 
 ---
 
-##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.dataTypeSpec"></a>
+##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.dataTypeSpec"></a>
 
 ```typescript
 public readonly dataTypeSpec: string;
@@ -502,7 +581,7 @@ This parameter exists on properties that have the STRUCT data type.
 
 ---
 
-##### `logicalId`<sup>Optional</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.logicalId"></a>
+##### `logicalId`<sup>Optional</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.logicalId"></a>
 
 ```typescript
 public readonly logicalId: string;
@@ -517,7 +596,7 @@ The maximum length is 256 characters, with the pattern [^\\u0000-\\u001F\\u007F]
 
 ---
 
-##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.unit"></a>
+##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.unit"></a>
 
 ```typescript
 public readonly unit: string;
@@ -529,101 +608,7 @@ The unit of the asset model property, such as Newtons or RPM.
 
 ---
 
-### Metric <a name="Metric" id="@aws-cdk/aws-iotsitewise-alpha.Metric"></a>
-
-#### Initializer <a name="Initializer" id="@aws-cdk/aws-iotsitewise-alpha.Metric.Initializer"></a>
-
-```typescript
-import { Metric } from '@aws-cdk/aws-iotsitewise-alpha'
-
-const metric: Metric = { ... }
-```
-
-#### Properties <a name="Properties" id="Properties"></a>
-
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | The data type of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.name">name</a></code> | <code>string</code> | The name of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | The data type of the structure for this property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.logicalId">logicalId</a></code> | <code>string</code> | The LogicalID of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.unit">unit</a></code> | <code>string</code> | The unit of the asset model property, such as Newtons or RPM. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.expression">expression</a></code> | <code>string</code> | The mathematical expression that defines the metric aggregation function. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.tumblingWindow">tumblingWindow</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TumblingWindow">TumblingWindow</a></code> | Contains a time interval window used for data aggregate computations (for example, average, sum, count, and so on). |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.variables">variables</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Variable">Variable</a>[]</code> | A mapping between the name used in the expression to the name of the referenced value. |
-
----
-
-##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.dataType"></a>
-
-```typescript
-public readonly dataType: DataType;
-```
-
-- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a>
-
-The data type of the asset model property.
-
-The value can be STRING, INTEGER, DOUBLE, BOOLEAN, or STRUCT.
-
----
-
-##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.name"></a>
-
-```typescript
-public readonly name: string;
-```
-
-- *Type:* string
-
-The name of the asset model property.
-
-The maximum length is 256 characters with the pattern [^\u0000-\u001F\u007F]+.
-
----
-
-##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.dataTypeSpec"></a>
-
-```typescript
-public readonly dataTypeSpec: string;
-```
-
-- *Type:* string
-
-The data type of the structure for this property.
-
-This parameter exists on properties that have the STRUCT data type.
-
----
-
-##### `logicalId`<sup>Optional</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.logicalId"></a>
-
-```typescript
-public readonly logicalId: string;
-```
-
-- *Type:* string
-- *Default:* Asset Model's ID concatenated with Property's name example: Asset Model ID = "Motor" Property name = "OilTemperature" Yields a logicalId = "MotorOilTemperature"
-
-The LogicalID of the asset model property.
-
-The maximum length is 256 characters, with the pattern [^\\u0000-\\u001F\\u007F]+.
-
----
-
-##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.unit"></a>
-
-```typescript
-public readonly unit: string;
-```
-
-- *Type:* string
-
-The unit of the asset model property, such as Newtons or RPM.
-
----
-
-##### `expression`<sup>Required</sup> <a name="expression" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.expression"></a>
+##### `expression`<sup>Required</sup> <a name="expression" id="@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.expression"></a>
 
 ```typescript
 public readonly expression: string;
@@ -638,7 +623,7 @@ functions per expression.
 
 ---
 
-##### `tumblingWindow`<sup>Required</sup> <a name="tumblingWindow" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.tumblingWindow"></a>
+##### `tumblingWindow`<sup>Required</sup> <a name="tumblingWindow" id="@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.tumblingWindow"></a>
 
 ```typescript
 public readonly tumblingWindow: TumblingWindow;
@@ -652,7 +637,7 @@ Contains a time interval window used for data aggregate computations (for exampl
 
 ---
 
-##### `variables`<sup>Required</sup> <a name="variables" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.variables"></a>
+##### `variables`<sup>Required</sup> <a name="variables" id="@aws-cdk/aws-iotsitewise-alpha.MetricProps.property.variables"></a>
 
 ```typescript
 public readonly variables: Variable[];
@@ -666,31 +651,31 @@ See addMetric for an example
 
 ---
 
-### Property <a name="Property" id="@aws-cdk/aws-iotsitewise-alpha.Property"></a>
+### PropertyProps <a name="PropertyProps" id="@aws-cdk/aws-iotsitewise-alpha.PropertyProps"></a>
 
 Properties for defining a `Property`.
 
-#### Initializer <a name="Initializer" id="@aws-cdk/aws-iotsitewise-alpha.Property.Initializer"></a>
+#### Initializer <a name="Initializer" id="@aws-cdk/aws-iotsitewise-alpha.PropertyProps.Initializer"></a>
 
 ```typescript
-import { Property } from '@aws-cdk/aws-iotsitewise-alpha'
+import { PropertyProps } from '@aws-cdk/aws-iotsitewise-alpha'
 
-const property: Property = { ... }
+const propertyProps: PropertyProps = { ... }
 ```
 
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | The data type of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.property.name">name</a></code> | <code>string</code> | The name of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | The data type of the structure for this property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.property.logicalId">logicalId</a></code> | <code>string</code> | The LogicalID of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.property.unit">unit</a></code> | <code>string</code> | The unit of the asset model property, such as Newtons or RPM. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.PropertyProps.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | The data type of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.PropertyProps.property.name">name</a></code> | <code>string</code> | The name of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.PropertyProps.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | The data type of the structure for this property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.PropertyProps.property.logicalId">logicalId</a></code> | <code>string</code> | The LogicalID of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.PropertyProps.property.unit">unit</a></code> | <code>string</code> | The unit of the asset model property, such as Newtons or RPM. |
 
 ---
 
-##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.Property.property.dataType"></a>
+##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.PropertyProps.property.dataType"></a>
 
 ```typescript
 public readonly dataType: DataType;
@@ -704,7 +689,7 @@ The value can be STRING, INTEGER, DOUBLE, BOOLEAN, or STRUCT.
 
 ---
 
-##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Property.property.name"></a>
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.PropertyProps.property.name"></a>
 
 ```typescript
 public readonly name: string;
@@ -718,7 +703,7 @@ The maximum length is 256 characters with the pattern [^\u0000-\u001F\u007F]+.
 
 ---
 
-##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.Property.property.dataTypeSpec"></a>
+##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.PropertyProps.property.dataTypeSpec"></a>
 
 ```typescript
 public readonly dataTypeSpec: string;
@@ -732,7 +717,7 @@ This parameter exists on properties that have the STRUCT data type.
 
 ---
 
-##### `logicalId`<sup>Optional</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.Property.property.logicalId"></a>
+##### `logicalId`<sup>Optional</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.PropertyProps.property.logicalId"></a>
 
 ```typescript
 public readonly logicalId: string;
@@ -747,7 +732,7 @@ The maximum length is 256 characters, with the pattern [^\\u0000-\\u001F\\u007F]
 
 ---
 
-##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.Property.property.unit"></a>
+##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.PropertyProps.property.unit"></a>
 
 ```typescript
 public readonly unit: string;
@@ -759,31 +744,31 @@ The unit of the asset model property, such as Newtons or RPM.
 
 ---
 
-### Transform <a name="Transform" id="@aws-cdk/aws-iotsitewise-alpha.Transform"></a>
+### TransformProps <a name="TransformProps" id="@aws-cdk/aws-iotsitewise-alpha.TransformProps"></a>
 
-#### Initializer <a name="Initializer" id="@aws-cdk/aws-iotsitewise-alpha.Transform.Initializer"></a>
+#### Initializer <a name="Initializer" id="@aws-cdk/aws-iotsitewise-alpha.TransformProps.Initializer"></a>
 
 ```typescript
-import { Transform } from '@aws-cdk/aws-iotsitewise-alpha'
+import { TransformProps } from '@aws-cdk/aws-iotsitewise-alpha'
 
-const transform: Transform = { ... }
+const transformProps: TransformProps = { ... }
 ```
 
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | The data type of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.name">name</a></code> | <code>string</code> | The name of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | The data type of the structure for this property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.logicalId">logicalId</a></code> | <code>string</code> | The LogicalID of the asset model property. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.unit">unit</a></code> | <code>string</code> | The unit of the asset model property, such as Newtons or RPM. |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.expression">expression</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.variables">variables</a></code> | <code>{[ key: string ]: string}</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | The data type of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.name">name</a></code> | <code>string</code> | The name of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | The data type of the structure for this property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.logicalId">logicalId</a></code> | <code>string</code> | The LogicalID of the asset model property. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.unit">unit</a></code> | <code>string</code> | The unit of the asset model property, such as Newtons or RPM. |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.expression">expression</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.variables">variables</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Variable">Variable</a>[]</code> | *No description.* |
 
 ---
 
-##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.dataType"></a>
+##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.dataType"></a>
 
 ```typescript
 public readonly dataType: DataType;
@@ -797,7 +782,7 @@ The value can be STRING, INTEGER, DOUBLE, BOOLEAN, or STRUCT.
 
 ---
 
-##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.name"></a>
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.name"></a>
 
 ```typescript
 public readonly name: string;
@@ -811,7 +796,7 @@ The maximum length is 256 characters with the pattern [^\u0000-\u001F\u007F]+.
 
 ---
 
-##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.dataTypeSpec"></a>
+##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.dataTypeSpec"></a>
 
 ```typescript
 public readonly dataTypeSpec: string;
@@ -825,7 +810,7 @@ This parameter exists on properties that have the STRUCT data type.
 
 ---
 
-##### `logicalId`<sup>Optional</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.logicalId"></a>
+##### `logicalId`<sup>Optional</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.logicalId"></a>
 
 ```typescript
 public readonly logicalId: string;
@@ -840,7 +825,7 @@ The maximum length is 256 characters, with the pattern [^\\u0000-\\u001F\\u007F]
 
 ---
 
-##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.unit"></a>
+##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.unit"></a>
 
 ```typescript
 public readonly unit: string;
@@ -852,7 +837,7 @@ The unit of the asset model property, such as Newtons or RPM.
 
 ---
 
-##### `expression`<sup>Required</sup> <a name="expression" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.expression"></a>
+##### `expression`<sup>Required</sup> <a name="expression" id="@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.expression"></a>
 
 ```typescript
 public readonly expression: string;
@@ -862,13 +847,13 @@ public readonly expression: string;
 
 ---
 
-##### `variables`<sup>Required</sup> <a name="variables" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.variables"></a>
+##### `variables`<sup>Required</sup> <a name="variables" id="@aws-cdk/aws-iotsitewise-alpha.TransformProps.property.variables"></a>
 
 ```typescript
-public readonly variables: {[ key: string ]: string};
+public readonly variables: Variable[];
 ```
 
-- *Type:* {[ key: string ]: string}
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.Variable">Variable</a>[]
 
 ---
 
@@ -927,7 +912,7 @@ const variable: Variable = { ... }
 | --- | --- | --- |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Variable.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Variable.property.property">property</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property">Property</a></code> | *No description.* |
-| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Variable.property.model">model</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel">AssetModel</a></code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Variable.property.hierachy">hierachy</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Hierarchy">Hierarchy</a></code> | *No description.* |
 
 ---
 
@@ -951,13 +936,559 @@ public readonly property: Property;
 
 ---
 
-##### `model`<sup>Optional</sup> <a name="model" id="@aws-cdk/aws-iotsitewise-alpha.Variable.property.model"></a>
+##### `hierachy`<sup>Optional</sup> <a name="hierachy" id="@aws-cdk/aws-iotsitewise-alpha.Variable.property.hierachy"></a>
 
 ```typescript
-public readonly model: AssetModel;
+public readonly hierachy: Hierarchy;
 ```
 
-- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.AssetModel">AssetModel</a>
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.Hierarchy">Hierarchy</a>
+
+---
+
+## Classes <a name="Classes" id="Classes"></a>
+
+### Attribute <a name="Attribute" id="@aws-cdk/aws-iotsitewise-alpha.Attribute"></a>
+
+#### Initializers <a name="Initializers" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.Initializer"></a>
+
+```typescript
+import { Attribute } from '@aws-cdk/aws-iotsitewise-alpha'
+
+new Attribute(props: AttributeProps)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.Initializer.parameter.props">props</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.AttributeProps">AttributeProps</a></code> | *No description.* |
+
+---
+
+##### `props`<sup>Required</sup> <a name="props" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.Initializer.parameter.props"></a>
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.AttributeProps">AttributeProps</a>
+
+---
+
+
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.logicalId">logicalId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.unit">unit</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.typeName">typeName</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Attribute.property.defaultValue">defaultValue</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.dataType"></a>
+
+```typescript
+public readonly dataType: DataType;
+```
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a>
+
+---
+
+##### `logicalId`<sup>Required</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.logicalId"></a>
+
+```typescript
+public readonly logicalId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+---
+
+##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.dataTypeSpec"></a>
+
+```typescript
+public readonly dataTypeSpec: string;
+```
+
+- *Type:* string
+
+---
+
+##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.unit"></a>
+
+```typescript
+public readonly unit: string;
+```
+
+- *Type:* string
+
+---
+
+##### `typeName`<sup>Required</sup> <a name="typeName" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.typeName"></a>
+
+```typescript
+public readonly typeName: string;
+```
+
+- *Type:* string
+
+---
+
+##### `defaultValue`<sup>Optional</sup> <a name="defaultValue" id="@aws-cdk/aws-iotsitewise-alpha.Attribute.property.defaultValue"></a>
+
+```typescript
+public readonly defaultValue: string;
+```
+
+- *Type:* string
+
+---
+
+
+### Measurement <a name="Measurement" id="@aws-cdk/aws-iotsitewise-alpha.Measurement"></a>
+
+#### Initializers <a name="Initializers" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.Initializer"></a>
+
+```typescript
+import { Measurement } from '@aws-cdk/aws-iotsitewise-alpha'
+
+new Measurement(__0: PropertyProps)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.Initializer.parameter.__0">__0</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.PropertyProps">PropertyProps</a></code> | *No description.* |
+
+---
+
+##### `__0`<sup>Required</sup> <a name="__0" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.Initializer.parameter.__0"></a>
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.PropertyProps">PropertyProps</a>
+
+---
+
+
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.logicalId">logicalId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.unit">unit</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Measurement.property.typeName">typeName</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.dataType"></a>
+
+```typescript
+public readonly dataType: DataType;
+```
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a>
+
+---
+
+##### `logicalId`<sup>Required</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.logicalId"></a>
+
+```typescript
+public readonly logicalId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+---
+
+##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.dataTypeSpec"></a>
+
+```typescript
+public readonly dataTypeSpec: string;
+```
+
+- *Type:* string
+
+---
+
+##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.unit"></a>
+
+```typescript
+public readonly unit: string;
+```
+
+- *Type:* string
+
+---
+
+##### `typeName`<sup>Required</sup> <a name="typeName" id="@aws-cdk/aws-iotsitewise-alpha.Measurement.property.typeName"></a>
+
+```typescript
+public readonly typeName: string;
+```
+
+- *Type:* string
+
+---
+
+
+### Metric <a name="Metric" id="@aws-cdk/aws-iotsitewise-alpha.Metric"></a>
+
+#### Initializers <a name="Initializers" id="@aws-cdk/aws-iotsitewise-alpha.Metric.Initializer"></a>
+
+```typescript
+import { Metric } from '@aws-cdk/aws-iotsitewise-alpha'
+
+new Metric(props: MetricProps)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.Initializer.parameter.props">props</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.MetricProps">MetricProps</a></code> | *No description.* |
+
+---
+
+##### `props`<sup>Required</sup> <a name="props" id="@aws-cdk/aws-iotsitewise-alpha.Metric.Initializer.parameter.props"></a>
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.MetricProps">MetricProps</a>
+
+---
+
+
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.logicalId">logicalId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.unit">unit</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.expression">expression</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.tumblingWindow">tumblingWindow</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TumblingWindow">TumblingWindow</a></code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.typeName">typeName</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Metric.property.variables">variables</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Variable">Variable</a>[]</code> | *No description.* |
+
+---
+
+##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.dataType"></a>
+
+```typescript
+public readonly dataType: DataType;
+```
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a>
+
+---
+
+##### `logicalId`<sup>Required</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.logicalId"></a>
+
+```typescript
+public readonly logicalId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+---
+
+##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.dataTypeSpec"></a>
+
+```typescript
+public readonly dataTypeSpec: string;
+```
+
+- *Type:* string
+
+---
+
+##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.unit"></a>
+
+```typescript
+public readonly unit: string;
+```
+
+- *Type:* string
+
+---
+
+##### `expression`<sup>Required</sup> <a name="expression" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.expression"></a>
+
+```typescript
+public readonly expression: string;
+```
+
+- *Type:* string
+
+---
+
+##### `tumblingWindow`<sup>Required</sup> <a name="tumblingWindow" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.tumblingWindow"></a>
+
+```typescript
+public readonly tumblingWindow: TumblingWindow;
+```
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.TumblingWindow">TumblingWindow</a>
+
+---
+
+##### `typeName`<sup>Required</sup> <a name="typeName" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.typeName"></a>
+
+```typescript
+public readonly typeName: string;
+```
+
+- *Type:* string
+
+---
+
+##### `variables`<sup>Required</sup> <a name="variables" id="@aws-cdk/aws-iotsitewise-alpha.Metric.property.variables"></a>
+
+```typescript
+public readonly variables: Variable[];
+```
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.Variable">Variable</a>[]
+
+---
+
+
+### Property <a name="Property" id="@aws-cdk/aws-iotsitewise-alpha.Property"></a>
+
+#### Initializers <a name="Initializers" id="@aws-cdk/aws-iotsitewise-alpha.Property.Initializer"></a>
+
+```typescript
+import { Property } from '@aws-cdk/aws-iotsitewise-alpha'
+
+new Property(__0: PropertyProps)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.Initializer.parameter.__0">__0</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.PropertyProps">PropertyProps</a></code> | *No description.* |
+
+---
+
+##### `__0`<sup>Required</sup> <a name="__0" id="@aws-cdk/aws-iotsitewise-alpha.Property.Initializer.parameter.__0"></a>
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.PropertyProps">PropertyProps</a>
+
+---
+
+
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.property.logicalId">logicalId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Property.property.unit">unit</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.Property.property.dataType"></a>
+
+```typescript
+public readonly dataType: DataType;
+```
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a>
+
+---
+
+##### `logicalId`<sup>Required</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.Property.property.logicalId"></a>
+
+```typescript
+public readonly logicalId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Property.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+---
+
+##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.Property.property.dataTypeSpec"></a>
+
+```typescript
+public readonly dataTypeSpec: string;
+```
+
+- *Type:* string
+
+---
+
+##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.Property.property.unit"></a>
+
+```typescript
+public readonly unit: string;
+```
+
+- *Type:* string
+
+---
+
+
+### Transform <a name="Transform" id="@aws-cdk/aws-iotsitewise-alpha.Transform"></a>
+
+#### Initializers <a name="Initializers" id="@aws-cdk/aws-iotsitewise-alpha.Transform.Initializer"></a>
+
+```typescript
+import { Transform } from '@aws-cdk/aws-iotsitewise-alpha'
+
+new Transform(props: TransformProps)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.Initializer.parameter.props">props</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.TransformProps">TransformProps</a></code> | *No description.* |
+
+---
+
+##### `props`<sup>Required</sup> <a name="props" id="@aws-cdk/aws-iotsitewise-alpha.Transform.Initializer.parameter.props"></a>
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.TransformProps">TransformProps</a>
+
+---
+
+
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.dataType">dataType</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a></code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.logicalId">logicalId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.dataTypeSpec">dataTypeSpec</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.unit">unit</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.expression">expression</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.typeName">typeName</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Transform.property.variables">variables</a></code> | <code><a href="#@aws-cdk/aws-iotsitewise-alpha.Variable">Variable</a>[]</code> | *No description.* |
+
+---
+
+##### `dataType`<sup>Required</sup> <a name="dataType" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.dataType"></a>
+
+```typescript
+public readonly dataType: DataType;
+```
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.DataType">DataType</a>
+
+---
+
+##### `logicalId`<sup>Required</sup> <a name="logicalId" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.logicalId"></a>
+
+```typescript
+public readonly logicalId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+---
+
+##### `dataTypeSpec`<sup>Optional</sup> <a name="dataTypeSpec" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.dataTypeSpec"></a>
+
+```typescript
+public readonly dataTypeSpec: string;
+```
+
+- *Type:* string
+
+---
+
+##### `unit`<sup>Optional</sup> <a name="unit" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.unit"></a>
+
+```typescript
+public readonly unit: string;
+```
+
+- *Type:* string
+
+---
+
+##### `expression`<sup>Required</sup> <a name="expression" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.expression"></a>
+
+```typescript
+public readonly expression: string;
+```
+
+- *Type:* string
+
+---
+
+##### `typeName`<sup>Required</sup> <a name="typeName" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.typeName"></a>
+
+```typescript
+public readonly typeName: string;
+```
+
+- *Type:* string
+
+---
+
+##### `variables`<sup>Required</sup> <a name="variables" id="@aws-cdk/aws-iotsitewise-alpha.Transform.property.variables"></a>
+
+```typescript
+public readonly variables: Variable[];
+```
+
+- *Type:* <a href="#@aws-cdk/aws-iotsitewise-alpha.Variable">Variable</a>[]
 
 ---
 

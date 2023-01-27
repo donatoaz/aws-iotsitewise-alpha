@@ -33,6 +33,7 @@ jspm_packages/
 .vscode
 _local_test/
 cdk.json
+cdk.out/
 !/.projenrc.js
 /test-reports/
 junit.xml

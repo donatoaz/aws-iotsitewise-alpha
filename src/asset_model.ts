@@ -17,14 +17,7 @@ export enum DataType {
  * @stability external
  *
  */
-export interface Property {
-  /**
-   * Used to map to PropertyTypeProperty
-   *
-   * @internal
-   */
-  _type?: 'Attribute' | 'Metric' | 'Transform' | 'Measurement';
-
+export interface PropertyProps {
   /**
    * The data type of the asset model property.
    * The value can be STRING, INTEGER, DOUBLE, BOOLEAN, or STRUCT.
@@ -62,6 +55,34 @@ export interface Property {
   readonly unit?: string;
 }
 
+export class Property {
+  readonly dataType: DataType;
+  readonly name: string;
+  readonly logicalId: string;
+  readonly dataTypeSpec: string | undefined;
+  readonly unit: string | undefined;
+
+  constructor({
+    dataType,
+    name,
+    logicalId,
+    dataTypeSpec,
+    unit,
+  }: PropertyProps) {
+    this.dataType = dataType;
+    this.name = name;
+    this.logicalId = logicalId || name.replace(/[^\w-]/g, '_');
+    this.dataTypeSpec = dataTypeSpec;
+    this.unit = unit;
+  }
+}
+
+export class Measurement extends Property {
+  get typeName() {
+    return 'Measurement';
+  }
+}
+
 export interface Variable {
   readonly name: string;
   readonly property: Property;
@@ -69,17 +90,46 @@ export interface Variable {
 }
 
 export interface Hierarchy {
-  name: string;
-  childAssetModelId: string;
+  readonly name: string;
+  readonly childAssetModelId: string;
 }
 
-export interface Attribute extends Property {
+export interface AttributeProps extends PropertyProps {
   readonly defaultValue?: string;
 }
 
-export interface Transform extends Property {
+export class Attribute extends Property {
+  readonly defaultValue: string | undefined;
+
+  constructor(props: AttributeProps) {
+    super(props);
+
+    this.defaultValue = props.defaultValue;
+  }
+
+  get typeName() {
+    return 'Attribute';
+  }
+}
+
+export interface TransformProps extends PropertyProps {
   readonly expression: string;
   readonly variables: Variable[];
+}
+
+export class Transform extends Property {
+  readonly expression: string;
+  readonly variables: Variable[];
+  constructor(props: TransformProps) {
+    super(props);
+
+    this.expression = props.expression;
+    this.variables = props.variables;
+  }
+
+  get typeName() {
+    return 'Transform';
+  }
 }
 
 export interface TumblingWindow {
@@ -87,7 +137,7 @@ export interface TumblingWindow {
   readonly offset?: string;
 }
 
-export interface Metric extends Property {
+export interface MetricProps extends PropertyProps {
   /**
    * The mathematical expression that defines the metric aggregation function.
    * You can specify up to 10 variables per expression. You can specify up to 10
@@ -110,7 +160,23 @@ export interface Metric extends Property {
   readonly variables: Variable[];
 }
 
-export interface Measurement extends Property {}
+export class Metric extends Property {
+  readonly expression: string;
+  readonly tumblingWindow: TumblingWindow;
+  readonly variables: Variable[];
+
+  constructor(props: MetricProps) {
+    super(props);
+
+    this.expression = props.expression;
+    this.tumblingWindow = props.tumblingWindow;
+    this.variables = props.variables;
+  }
+
+  get typeName() {
+    return 'Metric';
+  }
+}
 
 export interface AssetModelProps {
   /**
@@ -129,7 +195,12 @@ export class AssetModel extends Construct {
   public readonly model: CfnAssetModel;
   public readonly id: string;
 
-  private readonly properties: (Attribute | Measurement | Transform | Metric)[];
+  // private readonly properties: (Attribute | Measurement | Transform | Metric)[];
+  private readonly attributes: Attribute[];
+  private readonly measurements: Measurement[];
+  private readonly transforms: Transform[];
+  private readonly metrics: Metric[];
+
   private readonly children: Hierarchy[];
 
   constructor(scope: Construct, id: string, props: AssetModelProps) {
@@ -138,7 +209,12 @@ export class AssetModel extends Construct {
     const { name, description } = props;
 
     this.id = id;
-    this.properties = [];
+
+    this.attributes = [];
+    this.measurements = [];
+    this.transforms = [];
+    this.metrics = [];
+
     this.children = [];
 
     this.model = new CfnAssetModel(this, 'Resource', {
@@ -161,8 +237,16 @@ export class AssetModel extends Construct {
     return this.model.getAtt('AssetModelId').toString();
   }
 
-  child(name: string) {
-    return this.children.find((c) => c.name === name);
+  get name() {
+    return this.model.assetModelName;
+  }
+
+  private hierarchyName(child: AssetModel) {
+    return (this.name + '-' + child.name).replace(/[^\w-]/g, '_');
+  }
+
+  findChild(child: AssetModel) {
+    return this.children.find((c) => c.name === this.hierarchyName(child));
   }
 
   /**
@@ -171,19 +255,20 @@ export class AssetModel extends Construct {
    * @param {AssetModel} child
    * @returns {AssetModel} instance of {AssetModel}
    */
-  addChild(child: Hierarchy): AssetModel {
-    if (!child.name.match(/[^\u0000-\u001F\u007F]+/)) {
-      throw new Error(`Invalid name: ${child.name}`);
-    }
+  addChild(child: AssetModel): AssetModel {
+    const hierarchy: Hierarchy = {
+      name: this.hierarchyName(child),
+      childAssetModelId: child.assetModelId,
+    };
 
-    this.children.push(child);
+    this.children.push(hierarchy);
 
-    return this;
+    return child;
   }
 
-  addChildren(...children: Hierarchy[]) {
+  addChildren(...children: AssetModel[]) {
     for (const c of children) {
-      this.children.push(c);
+      this.addChild(c);
     }
   }
 
@@ -212,7 +297,7 @@ export class AssetModel extends Construct {
    * @returns {AssetModel} instance of AssetModel
    */
   addAttribute(attr: Attribute): AssetModel {
-    this.properties.push({ _type: 'Attribute', ...attr });
+    this.attributes.push(attr);
     return this;
   }
 
@@ -249,7 +334,7 @@ export class AssetModel extends Construct {
    * @link https://docs.aws.amazon.com/iot-sitewise/latest/userguide/transforms.html
    */
   addTransform(transform: Transform): AssetModel {
-    this.properties.push({ _type: 'Transform', ...transform });
+    this.transforms.push(transform);
     return this;
   }
 
@@ -265,6 +350,7 @@ export class AssetModel extends Construct {
    *
    * Example:
    *
+   * ```javascript
    * let motor: AssetModel;
    * motor.addMetric({
    *   name: 'Max Temperature C',
@@ -278,6 +364,7 @@ export class AssetModel extends Construct {
    *     tumbling: { interval: '1h' }
    *   }
    * })
+   * ```
    *
    * @param metric
    * @returns
@@ -285,12 +372,12 @@ export class AssetModel extends Construct {
    * @link https://docs.aws.amazon.com/iot-sitewise/latest/userguide/metrics.html
    */
   addMetric(metric: Metric): AssetModel {
-    this.properties.push({ _type: 'Metric', ...metric });
+    this.metrics.push(metric);
     return this;
   }
 
   addMeasurement(measurement: Measurement): AssetModel {
-    this.properties.push({ _type: 'Measurement', ...measurement });
+    this.measurements.push(measurement);
     return this;
   }
 
@@ -307,9 +394,8 @@ export class AssetModel extends Construct {
   }
 
   private renderAssetModelProperties(): CfnAssetModel.AssetModelPropertyProperty[] {
-    const attributes = this.properties
-      .filter(({ _type }) => _type === 'Attribute')
-      .map((a: Attribute): CfnAssetModel.AssetModelPropertyProperty => {
+    const attributes = this.attributes.map(
+      (a: Attribute): CfnAssetModel.AssetModelPropertyProperty => {
         const attr_type: CfnAssetModel.PropertyTypeProperty = {
           typeName: 'Attribute',
           attribute: {
@@ -324,60 +410,55 @@ export class AssetModel extends Construct {
           logicalId: a.logicalId || this.id + a.name.replace(/[^\w]/g, ''),
           type: attr_type,
         };
-      });
+      },
+    );
 
-    const measures = this.properties
-      .filter(({ _type }) => _type === 'Measurement')
-      .map(
-        (m: Measurement): CfnAssetModel.AssetModelPropertyProperty => ({
-          name: m.name,
-          dataType: m.dataType,
-          dataTypeSpec: m.dataTypeSpec,
-          logicalId: m.logicalId || this.id + m.name.replace(/[^\w]/g, ''),
-          unit: m.unit,
-          type: {
-            typeName: 'Measurement',
-          },
-        }),
-      );
-
-    const metrics = (
-      this.properties.filter(({ _type }) => _type === 'Metric') as Metric[]
-    ).map((m: Metric): CfnAssetModel.AssetModelPropertyProperty => {
-      const metricType: CfnAssetModel.PropertyTypeProperty = {
-        typeName: 'Metric',
-        metric: {
-          expression: m.expression,
-          variables: m.variables.map((v) => ({
-            name: v.name,
-            value: {
-              propertyLogicalId: v.property.logicalId!,
-              hierarchyLogicalId: v.hierachy?.name,
-            },
-          })),
-          window: {
-            tumbling: {
-              ...m.tumblingWindow,
-            },
-          },
-        },
-      };
-
-      return {
+    const measurements = this.measurements.map(
+      (m: Measurement): CfnAssetModel.AssetModelPropertyProperty => ({
         name: m.name,
         dataType: m.dataType,
-        type: metricType,
-        logicalId: m.logicalId || this.id + m.name.replace(/[^\w]/g, ''),
-        unit: m.unit,
         dataTypeSpec: m.dataTypeSpec,
-      };
-    });
+        logicalId: m.logicalId!, // by this time we are sure this exists
+        unit: m.unit,
+        type: {
+          typeName: 'Measurement',
+        },
+      }),
+    );
 
-    const transforms = (
-      this.properties.filter(
-        ({ _type }) => _type === 'Transform',
-      ) as Transform[]
-    ).map(
+    const metrics = this.metrics.map(
+      (m: Metric): CfnAssetModel.AssetModelPropertyProperty => {
+        const metricType: CfnAssetModel.PropertyTypeProperty = {
+          typeName: 'Metric',
+          metric: {
+            expression: m.expression,
+            variables: m.variables.map((v) => ({
+              name: v.name,
+              value: {
+                propertyLogicalId: v.property.logicalId!,
+                hierarchyLogicalId: v.hierachy?.name,
+              },
+            })),
+            window: {
+              tumbling: {
+                ...m.tumblingWindow,
+              },
+            },
+          },
+        };
+
+        return {
+          name: m.name,
+          dataType: m.dataType,
+          type: metricType,
+          logicalId: m.logicalId || this.id + m.name.replace(/[^\w]/g, ''),
+          unit: m.unit,
+          dataTypeSpec: m.dataTypeSpec,
+        };
+      },
+    );
+
+    const transforms = this.transforms.map(
       (t: Transform): CfnAssetModel.AssetModelPropertyProperty => ({
         name: t.name,
         dataType: t.dataType,
@@ -400,7 +481,7 @@ export class AssetModel extends Construct {
       }),
     );
 
-    return attributes.concat(measures).concat(metrics).concat(transforms);
+    return attributes.concat(measurements).concat(metrics).concat(transforms);
   }
 }
 

@@ -1,7 +1,7 @@
 import { App, Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
-import { AssetModel, DataType, Measurement, Metric } from '../src/index';
+import { AssetModel, Attribute, DataType, Measurement, Metric, Transform } from '../src/index';
 
 const app = new App();
 const stack = new Stack(app);
@@ -12,11 +12,11 @@ const conveyor = new AssetModel(stack, 'Conveyor', {
   description: 'DC Motor driven Conveyor Belt',
 });
 
-conveyor.addAttribute({
+conveyor.addAttribute(new Attribute({
   name: 'Tag',
   dataType: DataType.STRING,
   defaultValue: 'CB-001',
-});
+}));
 
 const motor = new AssetModel(stack, 'Motor', {
   name: 'DC Motor',
@@ -33,21 +33,21 @@ const loadCell2 = new AssetModel(stack, 'loadCell2', {
   description: 'Indicates load in linear section of conveyor',
 });
 
-motor.addAttribute({
+motor.addAttribute(new Attribute({
   name: 'Rated Voltage',
   defaultValue: '440',
   dataType: DataType.INTEGER,
-});
+}));
 
-const temperature: Measurement = {
+const temperature: Measurement = new Measurement({
   name: 'Oil Temperature C',
   dataType: DataType.DOUBLE,
   unit: 'C',
   logicalId: 'TemperatureId', // for testing only, when deployed, this is a result from resource creation
-};
+});
 motor.addMeasurement(temperature);
 
-motor.addMetric({
+motor.addMetric(new Metric({
   name: 'Max Temperature C',
   dataType: DataType.DOUBLE,
   unit: 'C',
@@ -61,28 +61,28 @@ motor.addMetric({
   tumblingWindow: {
     interval: '1h',
   },
-} as Metric);
+}));
 
-motor.addTransform({
+motor.addTransform(new Transform({
   name: 'Oil Temperature F',
   dataType: DataType.DOUBLE,
   unit: 'F',
   expression: '9/5 * oil_temp_c + 32',
   variables: [{ name: 'oil_temp_c', property: temperature }],
-});
+}));
 
-const weight: Measurement = {
+const weight = {
   name: 'Weight Kg',
   dataType: DataType.DOUBLE,
   unit: 'Kg',
 };
-const weight1 = { logicalId: 'Weight1', ...weight };
-const weight2 = { logicalId: 'Weight2', ...weight };
+const weight1 = new Measurement({ logicalId: 'Weight1', ...weight });
+const weight2 = new Measurement({ logicalId: 'Weight2', ...weight });
 
 loadCell1.addMeasurement(weight1);
 loadCell2.addMeasurement(weight2);
 
-const avgWeight1 = {
+const avgWeight1 = new Metric({
   name: 'Avg Weight',
   dataType: DataType.DOUBLE,
   expression: 'avg(weight)',
@@ -97,9 +97,9 @@ const avgWeight1 = {
   tumblingWindow: {
     interval: '1h',
   },
-};
+});
 
-const avgWeight2 = {
+const avgWeight2 = new Metric({
   name: 'Avg Weight',
   dataType: DataType.DOUBLE,
   expression: 'avg(weight)',
@@ -114,28 +114,29 @@ const avgWeight2 = {
   tumblingWindow: {
     interval: '1h',
   },
-};
+});
 
 loadCell1.addMetric(avgWeight1);
 loadCell2.addMetric(avgWeight2);
 
 // Testing hierarchies
-conveyor.addChild({
-  name: 'Motor',
-  childAssetModelId: motor.assetModelId,
-});
+conveyor.addChildren(motor, loadCell1, loadCell2);
+// conveyor.addChild({
+//   name: 'Motor',
+//   childAssetModelId: motor.assetModelId,
+// });
 
-conveyor.addChild({
-  name: 'LoadCell1',
-  childAssetModelId: loadCell1.assetModelId,
-});
+// conveyor.addChild({
+//   name: 'LoadCell1',
+//   childAssetModelId: loadCell1.assetModelId,
+// });
 
-conveyor.addChild({
-  name: 'LoadCell2',
-  childAssetModelId: loadCell2.assetModelId,
-});
+// conveyor.addChild({
+//   name: 'LoadCell2',
+//   childAssetModelId: loadCell2.assetModelId,
+// });
 
-conveyor.addMetric({
+conveyor.addMetric(new Metric({
   name: 'Full Weight Kg',
   dataType: DataType.DOUBLE,
   expression: 'sum(load_1, load_2)',
@@ -145,18 +146,18 @@ conveyor.addMetric({
     {
       name: 'load_1',
       property: avgWeight1,
-      hierachy: conveyor.child('LoadCell1'),
+      hierachy: conveyor.findChild(loadCell1),
     },
     {
       name: 'load_2',
       property: avgWeight2,
-      hierachy: conveyor.child('LoadCell2'),
+      hierachy: conveyor.findChild(loadCell2),
     },
   ],
   tumblingWindow: {
     interval: '1h',
   },
-} as Metric);
+}));
 
 const template = Template.fromStack(stack);
 
@@ -172,8 +173,7 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
       AssetModelProperties: [
         {
           DataType: 'STRING',
-          // Attr id must be unique, so we concatenate instance id with attr name
-          LogicalId: 'ConveyorTag',
+          LogicalId: 'Tag',
           Name: 'Tag',
           Type: {
             Attribute: {
@@ -196,14 +196,14 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
                   Name: 'load_1',
                   Value: {
                     PropertyLogicalId: 'AvgWeight1',
-                    HierarchyLogicalId: 'LoadCell1',
+                    HierarchyLogicalId: 'Conveyor_Belt-Load_Cell__1',
                   },
                 },
                 {
                   Name: 'load_2',
                   Value: {
                     PropertyLogicalId: 'AvgWeight2',
-                    HierarchyLogicalId: 'LoadCell2',
+                    HierarchyLogicalId: 'Conveyor_Belt-Load_Cell__2',
                   },
                 },
               ],
@@ -221,22 +221,22 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
           ChildAssetModelId: {
             'Fn::GetAtt': ['Motor171E74FE', 'AssetModelId'],
           },
-          LogicalId: 'Motor',
-          Name: 'Motor',
+          LogicalId: 'Conveyor_Belt-DC_Motor',
+          Name: 'Conveyor_Belt-DC_Motor',
         },
         {
           ChildAssetModelId: {
             'Fn::GetAtt': ['loadCell11E15C242', 'AssetModelId'],
           },
-          LogicalId: 'LoadCell1',
-          Name: 'LoadCell1',
+          LogicalId: 'Conveyor_Belt-Load_Cell__1',
+          Name: 'Conveyor_Belt-Load_Cell__1',
         },
         {
           ChildAssetModelId: {
             'Fn::GetAtt': ['loadCell2EB275B40', 'AssetModelId'],
           },
-          LogicalId: 'LoadCell2',
-          Name: 'LoadCell2',
+          LogicalId: 'Conveyor_Belt-Load_Cell__2',
+          Name: 'Conveyor_Belt-Load_Cell__2',
         },
       ],
     });
@@ -250,7 +250,7 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
       AssetModelProperties: [
         {
           DataType: 'INTEGER',
-          LogicalId: 'MotorRatedVoltage',
+          LogicalId: 'Rated_Voltage',
           Name: 'Rated Voltage',
           Type: {
             Attribute: {
@@ -271,7 +271,7 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
         {
           Name: 'Max Temperature C',
           DataType: 'DOUBLE',
-          LogicalId: 'MotorMaxTemperatureC',
+          LogicalId: 'Max_Temperature_C',
           Type: {
             TypeName: 'Metric',
             Metric: {
@@ -296,7 +296,7 @@ describe('AWS::IoTSiteWise AssetModel Contruct', () => {
         {
           Name: 'Oil Temperature F',
           DataType: 'DOUBLE',
-          LogicalId: 'MotorOilTemperatureF',
+          LogicalId: 'Oil_Temperature_F',
           Type: {
             TypeName: 'Transform',
             Transform: {
