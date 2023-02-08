@@ -266,10 +266,12 @@ export class AssetModel extends Construct {
     return child;
   }
 
-  addChildren(...children: AssetModel[]) {
+  addChildren(...children: AssetModel[]): AssetModel {
     for (const c of children) {
       this.addChild(c);
     }
+
+    return this;
   }
 
   /**
