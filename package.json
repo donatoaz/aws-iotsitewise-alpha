@@ -1,5 +1,5 @@
 {
-  "name": "@aws-cdk/aws-iotsitewise-alpha",
+  "name": "aws-iotsitewise-alpha",
   "description": "The CDK Construct Library for AWS::IoTSitewise.",
   "repository": {
     "type": "git",

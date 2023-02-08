@@ -8,7 +8,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   authorAddress: 'donatoaz@amazon.com',
   cdkVersion: cdkVersion,
   defaultReleaseBranch: 'main',
-  name: '@aws-cdk/aws-iotsitewise-alpha',
+  name: 'aws-iotsitewise-alpha',
   repositoryUrl: 'https://github.com/donatoaz/aws-iotsitewise-alpha.git',
   license: 'Apache-2.0',
   keywords: ['experimental', 'awscdk'],
@@ -17,7 +17,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
     module: 'aws_iotsitewise_alpha',
   },
   stability: 'experimental',
-  packageName: '@aws-cdk/aws-iotsitewise-alpha',
+  packageName: 'aws-iotsitewise-alpha',
   description: 'The CDK Construct Library for AWS::IoTSitewise.',
 
   keywords: ['awscdk'],
@@ -25,7 +25,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
   eslint: true,
   // dependabot: true,
   gitignore: ['.vscode', '_local_test/', 'cdk.json', 'cdk.out/'],
-  // deps: ['aws-cdk-lib'],
   devDeps: ['aws-cdk-lib'] /* Build dependencies for this module. */,
 });
 
